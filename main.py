@@ -30,7 +30,6 @@ def hello_world():
     return {"Hello": "World"}
 
 def get_work_item(user_story_id, connection):
-    print(user_story_id)
     client = connection.clients.get_work_item_tracking_client()
     work_item = client.get_work_item(user_story_id, expand="Relations")
     return work_item
@@ -43,7 +42,6 @@ def get_user_story_children_ids(work_item):
             if x.attributes['name'] == "Child" 
     ]
     
-    print(child_ids)
     return child_ids
 
 def get_azure_devops_connection():
@@ -63,7 +61,7 @@ def read_item(user_story_id: int):
 
     work_item = get_work_item(user_story_id, connection)
     work_item_name = get_work_item_title(work_item)
-    child_ids = get_user_story_children_ids(work_item)
+    child_ids = sorted(get_user_story_children_ids(work_item))
 
     tasks = []
     for child_id in child_ids:
