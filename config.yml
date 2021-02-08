@@ -1,0 +1,24 @@
+
+#Jira to TFS Mapping
+mapping:
+  Project : PROGRAM
+  Feature: PROJECT
+  UserDefinedFeature: FEATURE
+  UserStory: STORY
+  Task: TASK
+
+ToSync:
+  PROGRAM:
+  - Name: Core \\- Commercial Opportunities #  Escape Chars \\ needed for JQL
+    PROJECT:
+      - Name: Rebuild Lite Cameras
+        FEATURE:
+        - Name: OOXML Lite Camera
+          STORY: [ 114352 ]
+        - Name: Binary DOC Lite Camera
+          STORY: [ 114369 ]
+        - Name: Binary PPT Lite Camera
+          STORY: [ 113284 ]
+        - Name: Binary XLS Lite Camera - Bug Fixes
+          STORY: [ 114506 ]
+
