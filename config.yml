@@ -1,9 +1,9 @@
 
-#Jira to TFS Mapping
+#TFS to Jira Mapping
 mapping:
-  Project : PROGRAM
-  Feature: PROJECT
-  UserDefinedFeature: FEATURE
+  UserDefined_1: PROGRAM
+  UserDefined_2: PROJECT
+  UserDefined_3: FEATURE
   UserStory: STORY
   Task: TASK
 
