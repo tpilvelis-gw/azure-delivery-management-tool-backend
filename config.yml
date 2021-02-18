@@ -7,9 +7,11 @@ mapping:
   UserStory: STORY
   Task: TASK
 
+#  WARNING
+#  Escape Chars \\ needed for JQL
 ToSync:
   PROGRAM:
-  - Name: Core \\- Commercial Opportunities #  Escape Chars \\ needed for JQL
+  - Name: Core \\- Commercial Opportunities
     PROJECT:
       - Name: Rebuild Lite Cameras
         FEATURE:
@@ -19,6 +21,8 @@ ToSync:
           STORY: [ 114369 ]
         - Name: Binary PPT Lite Camera
           STORY: [ 113284 ]
-        - Name: Binary XLS Lite Camera - Bug Fixes
+        - Name: Binary XLS Lite Camera \\- Bug Fixes
           STORY: [ 114506 ]
+        - Name: Spike \\- Release 1.155 Confirm Behavior
+          STORY: [ 114688 ]
 
