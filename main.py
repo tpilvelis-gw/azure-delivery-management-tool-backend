@@ -1,11 +1,9 @@
 from typing import Optional
 from fastapi import FastAPI
 from jira import JIRA
-import yaml
-
-from fastapi.middleware.cors import CORSMiddleware
-
 from azure.devops.connection import Connection
+import yaml
+from fastapi.middleware.cors import CORSMiddleware
 from msrest.authentication import BasicAuthentication
 import pprint
 
@@ -27,6 +25,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+JIRA_API_KEY = None
+AZURE_PAT_TOKEN = None
+ADO_ORG_URL = None
+JIRA_ORG_URL = None
+MY_WORK_EMAIL = None
+
 @app.get("/")
 def hello_world():
     return {"Hello": "World"}
@@ -47,16 +51,16 @@ def get_user_story_children_ids(work_item):
     return child_ids
 
 def get_azure_devops_connection():
-    personal_access_token = 'znhcqwauwvg4xhjodfdsotv5xwkg6facls3m7nl7xysqf7djlveq'
-    organization_url = 'https://dev.azure.com/glasswall'
+    personal_access_token = AZURE_PAT_TOKEN
+    organization_url = ADO_ORG_URL
     credentials = BasicAuthentication('', personal_access_token)
     connection = Connection(base_url=organization_url, creds=credentials)
     return connection
 
 def get_jira_connection():
-    options = {"server": "https://glasswall.atlassian.net"}
-    API_KEY = "CoEUZ5nleiplWH9ON8MW27E8"
-    user = "tpilvelis@glasswallsolutions.com"
+    options = {"server": JIRA_ORG_URL}
+    API_KEY = JIRA_API_KEY
+    user = MY_WORK_EMAIL
     jira = JIRA(options, basic_auth=(user, API_KEY))
     return jira
 
@@ -156,19 +160,44 @@ def sync_devops_to_jira():
 
                             for story in feature['STORY']:
                                 print("Interogating - STORY " + str(story))
-                                print(f"Read - ADO Story No {str(story)}")
                                 user_story_id = story #Reassigning for naming
 
                                 work_item = get_work_item(user_story_id, ado_conn)
                                 work_item_name = get_work_item_title(work_item)
                                 work_item_name = get_jira_formatted_name(work_item_name)
 
-                                query = f"project = STORY AND text ~ \"{work_item_name}\""
-                                story_issues = jira_conn.search_issues(query)
+                                story_issues = jira_conn.search_issues(f"project = STORY AND text ~ \"{work_item_name}\"")
 
                                 if len(story_issues) == 1:
                                     print("STORY Found...")
                                     # Do Tasks
+
+
+                                    child_ids = sorted(get_user_story_children_ids(work_item))
+                                    for task_id in child_ids:
+                                        print("Interogating - TASK " + str(task_id))
+
+                                        task = get_work_item(task_id, ado_conn)
+                                        task_name = get_work_item_title(task)
+                                        task_name = get_jira_formatted_name(task_name)
+                                        task_name = f"ADO Task {str(task_id)}: {task_name}"
+
+                                        task_issues = jira_conn.search_issues(f"project = TASK AND text ~ \"{task_name}\"")
+
+                                        if len(task_issues) == 1:
+                                            print("TASK Found...")
+                                        elif len(story_issues) > 1:
+                                            print(f"Too Many TASK jira issues could not find definitive, Skipping...")
+                                        else:
+                                            if to_create:
+                                                create_jira_issue_and_link("TASK", "Task", story_issues[0], task_name, jira_conn)
+                                            else:
+                                                print(f"-- Searching, no jira issues found, Skipping...")
+
+
+
+
+
 
 
 

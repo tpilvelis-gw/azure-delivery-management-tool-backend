@@ -16,7 +16,7 @@ ToSync:
       - Name: Rebuild Lite Cameras
         FEATURE:
         - Name: OOXML Lite Camera
-          STORY: [ 114352 ]
+          STORY: [ 114352, 114991 ]
         - Name: Binary DOC Lite Camera
           STORY: [ 114369 ]
         - Name: Binary PPT Lite Camera
